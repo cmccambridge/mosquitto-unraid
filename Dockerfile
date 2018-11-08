@@ -1,6 +1,4 @@
-ARG VERSION=1.5.3
-
-FROM eclipse-mosquitto:$VERSION
+FROM eclipse-mosquitto:1.5.3
 
 RUN cp /mosquitto/config/mosquitto.conf /mosquitto/mosquitto.conf.example
 COPY docker-entrypoint.sh /
