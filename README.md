@@ -15,7 +15,7 @@ This container is a minimal port of the official [Eclipse Mosquitto][eclipse-mos
 ## Usage
 
 Quick & Easy:
-1. Install from Community Applications
+1. Install from [Community Applications][ca]
 2. Configure port mappings
 3. Done!
 
@@ -48,8 +48,8 @@ The following ports are used by the default mosquitto configuration:
 |Port|Description|
 |---|---|
 |1883|Standard MQTT port|
-|8883|_Optional:_ frequently used as a MQTT TLS port. Not enabled by default. See [enabling TLS](#enabling-tls) configuration requirements.|
-|9001|_Optional:_ standard MQTT Websockets port. Not enabled by default. See [Websockets](#websockets) configuration requirements.|
+|8883|_Optional:_ Frequently used as a MQTT TLS port. Not enabled by default. See [enabling TLS](#enabling-tls) configuration requirements.|
+|9001|_Optional:_ Standard MQTT Websockets port. Not enabled by default. See [Websockets](#websockets) configuration requirements.|
 
 **Note:** You can modify the default listening ports through `*.conf` files, in which case you should update the corresponding port mappings as well.
 
