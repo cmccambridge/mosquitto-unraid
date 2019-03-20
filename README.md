@@ -9,6 +9,7 @@ This container is a minimal port of the official [Eclipse Mosquitto][eclipse-mos
 * [Volumes](#volumes)
 * [Ports](#ports)
 * [Configuration](#configuration)
+* [Advanced Configuration](#advanced-configuration)
 * [unRAID Integration](#unraid-integration)
 
 [eclipse-mosquitto]: https://mosquitto.org
@@ -137,7 +138,6 @@ docker exec -it mosquitto mosquitto_passwd -D /mosquitto/config/passwd user_2
 You can then refer to the password file from your configuration:
 
 ```
-
 password_file /mosquitto/config/passwd
 ```
 
@@ -146,8 +146,14 @@ Restart the container for your changes to take effect.
 ### Enabling TLS
 TODO
 
+_In the meantime, consult the [official documentation][official-docs]_
+
+[official-docs]: http://mosquitto.org/man/mosquitto-conf-5.html
+
 ### Websockets
 TODO
+
+_In the meantime, consult the [official documentation][official-docs]_
 
 ## unRAID Integration
 
