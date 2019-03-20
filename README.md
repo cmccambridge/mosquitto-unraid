@@ -1,6 +1,7 @@
 ![mosquitto logo](https://raw.githubusercontent.com/cmccambridge/mosquitto-unraid/master/media/eclipse-mosquitto.png)
 
 # cmccambridge/mosquitto-unraid
+[![Docker Repository on Quay](https://quay.io/repository/cmccambridge/mosquitto-unraid/status "Docker Repository on Quay")](https://quay.io/repository/cmccambridge/mosquitto-unraid)
 
 This container is a minimal port of the official [Eclipse Mosquitto][eclipse-mosquitto] Docker container with minor tweaks to work more conveniently in unRAID.
 
@@ -73,6 +74,14 @@ include_dir /mosquitto/config
 
 This configuration causes `mosquitto` to enumerate all `*.conf` files in the mount point `/mosquitto/config` and incorporate them into the shared configuration. You can create a single `mosquitto.conf` at this location, or a collection of separate `*.conf` files.
 
+For example, you might create the following files:
+
+|File|Content|
+|----|-------|
+|`mosquitto.conf`|Master mosquitto config file|
+|`tls.conf`|Additional listener config for TLS|
+|`websockets.conf`|Additional listener config for Websockets|
+
 **Warning:** The order that individual `*.conf` files are applied to the `mosquitto` configuration is not necessarily alphabetical, and is determined by idiosynchrosies of the operating system and filesystem, so it is not safe to attempt to "override" settings in one file from another.
 
 ## Advanced Configuration
@@ -80,10 +89,59 @@ This configuration causes `mosquitto` to enumerate all `*.conf` files in the mou
 A quick reference follows for a few common advanced configuration topics. For full details of the available configuration options, consult `man mosquitto.conf`, the [online documentation][online-man-page], or the [default content][default-mosquitto-conf] of `mosquitto.conf`.
 
 ### Persistent Data
-TODO
+
+To enable persistent data, set the following configuration options in your `mosquitto.conf` or another `*.conf` [configuration](#configuration) file:
+
+```
+persistence true
+persistence_location /mosquitto/data/
+```
+
+Restart the container for your changes to take effect.
 
 ### Logging
-TODO
+
+To enable logging, set the following configuration options in your `mosquitto.conf` or another `*.conf` [configuration](#configuration) file, uncommenting your desired log level(s):
+
+```
+log_dest file /mosquitto/log/mosquitto.log
+log_type error
+#log_type warning
+#log_type notice
+#log_type information
+```
+
+Restart the container for your changes to take effect.
+
+### Authentication
+
+To enable password-based authentication, you'll need to run `mosquitto_passwd` within the Docker container. For persistence of the generated file across container invocations, it is _highly_ recommended that you store it in the same mounted volume as your configuration file, i.e. `/mosquitto/config`.
+
+You can run `mosquitto_passwd` to create and manage your password file in a container named `mosquitto` like this:
+
+```
+# Create the file if it does not yet exist
+docker exec -it mosquitto touch /mosquitto/config/passwd
+
+# Create a new user named user_name, enter password interactively
+docker exec -it mosquitto mosquitto_passwd /mosquitto/config/passwd user_name
+
+# Create a new user named user_2 with password pass_2.
+# WARNING: pass_2 will appear in your command history!
+docker exec -it mosquitto mosquitto_passwd -b /mosquitto/config/passwd user_2 pass_2
+
+# Delete a user named user_2
+docker exec -it mosquitto mosquitto_passwd -D /mosquitto/config/passwd user_2
+```
+
+You can then refer to the password file from your configuration:
+
+```
+
+password_file /mosquitto/config/passwd
+```
+
+Restart the container for your changes to take effect.
 
 ### Enabling TLS
 TODO
@@ -116,7 +174,7 @@ Notes:
 
 Please see the [GitHub Issues][issues], where you can report any problems or make any feature requests as well!
 
-[issues]: https://github.com/cmccambridge/mosquitto-unriad/issues/
+[issues]: https://github.com/cmccambridge/mosquitto-unraid/issues/
 
 ## Credits
 
