@@ -1,0 +1,12 @@
+*~
+*.swp
+.vs
+
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache
+
+/.venv
+/env
+/test-results

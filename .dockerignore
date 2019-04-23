@@ -1,2 +1,13 @@
-media/
+.git
+*.pyc
+*~
+
+Dockerfile
 README.md
+.circleci
+media/
+
+.pytest_cache
+.venv
+env/
+test*/

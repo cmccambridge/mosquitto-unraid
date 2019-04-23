@@ -1,0 +1,65 @@
+# CircleCI 2.1 configuration file
+version: 2.1
+
+jobs:
+  build_test:
+    docker:
+      - image: circleci/python:3.7.2
+
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build Docker image
+          command: docker build -t mosquitto-unraid .
+      - run:
+          name: Test Docker image
+          command: |
+            python3 -m venv .venv
+            source .venv/bin/activate
+            pip install -r tests/requirements.txt
+            mkdir -p test-results/docker
+            pytest --junit-xml=test-results/docker/results.xml tests/
+      - store_test_results:
+          path: test-results
+      - run:
+          name: Persist Docker image to workspace (master only)
+          command: |
+            mkdir -p docker-image
+            touch docker-image/dummy.tar
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              docker save --output docker-image/image.tar mosquitto-unraid
+            fi
+      - persist_to_workspace:
+          root: docker-image
+          paths:
+            - "*.tar"
+
+  deploy:
+    docker:
+      - image: circleci/python:3.7.2
+    steps:
+      - setup_remote_docker
+      - attach_workspace:
+          at: build-output
+      - run:
+          name: "Load Docker image"
+          command: |
+            docker load --input build-output/image.tar
+      - run:
+          name: "Push to Docker Hub as :beta"
+          command: |
+            echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USER --password-stdin
+            docker tag mosquitto-unraid cmccambridge/mosquitto-unraid:beta
+            docker push cmccambridge/mosquitto-unraid:beta
+
+workflows:
+  build_test_deploy:
+    jobs:
+      - build_test
+      - deploy:
+          requires:
+            - build_test
+          filters:
+            branches:
+              only: master
