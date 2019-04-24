@@ -1,0 +1,11 @@
+.git
+*.pyc
+*~
+
+Dockerfile
+.circleci
+
+__pycache__
+.pytest_cache
+.venv
+env/
