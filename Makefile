@@ -1,6 +1,6 @@
 MKDIR_P := mkdir -p
 
-.PHONY: all clean images test circleci-test
+.PHONY: all clean images test circleci-test release
 
 clean:
 	rm -f mosquitto-unraid mosquitto-unraid-test
@@ -36,3 +36,11 @@ circleci-test: mosquitto-unraid mosquitto-unraid-tests
 		docker cp $(CONTAINER):/tests/test-results/docker/. test-results/docker/;\
 		docker rm $(CONTAINER);\
 		exit $$TEST_RC
+
+release:
+ifndef RELEASE_TAG
+	$(error Missing RELEASE_TAG)
+endif
+	docker pull cmccambridge/mosquitto-unraid:beta
+	docker tag cmccambridge/mosquitto-unraid:beta cmccambridge/mosquitto-unraid:$(RELEASE_TAG)
+	docker push cmccambridge/mosquitto-unraid:$(RELEASE_TAG)
