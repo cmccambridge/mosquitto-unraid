@@ -86,8 +86,13 @@ class MosquittoContainerHelper:
         return self.container.logs()
 
     @contextmanager
-    def connect(self, container_port=1883, protocol='tcp'):
-        mqtt_port = self.get_host_port(container_port)
+    def connect(
+            self,
+            container_port=1883,
+            protocol='tcp',
+            timeout=timedelta(seconds=5)
+            ):
+        container_host = self.get_container_ip()
 
         connection_rc = None
         def _on_connect(client, user_data, flags, rc):
@@ -96,12 +101,12 @@ class MosquittoContainerHelper:
 
         client = mqtt.Client()
         client.on_connect = _on_connect
-        client.connect("127.0.0.1", port=mqtt_port)
+        client.connect(container_host, port=container_port)
 
         try:
             client.loop_start()
 
-            timeout_time = datetime.now() + timedelta(seconds=5)
+            timeout_time = datetime.now() + timeout
             while datetime.now() < timeout_time and connection_rc is None:
                 sleep(0.050)
 
@@ -110,6 +115,7 @@ class MosquittoContainerHelper:
             else:
                 raise ConnectionError()
         finally:
+            client.disconnect()
             client.loop_stop()
 
     def wait(self, timeout=None):
@@ -139,6 +145,10 @@ class MosquittoContainerHelper:
             return int(port_bindings[container_port][0]['HostPort'])
         return None
 
+    def get_container_ip(self):
+        api_client = self.container.client.api
+        return api_client.inspect_container(self.container.id)['NetworkSettings']['IPAddress']
+
     def put_files(self, filespecs):
         if not filespecs:
             return
@@ -158,7 +168,7 @@ class MosquittoContainerHelper:
         for chunk in tar.extractfile(os.path.basename(path)):
             file_io.write(chunk)
         file_io.seek(0)
-        return file_io.getbuffer()
+        return file_io.getvalue()
 
 
 @pytest.fixture

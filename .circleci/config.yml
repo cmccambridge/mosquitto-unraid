@@ -11,15 +11,13 @@ jobs:
       - setup_remote_docker
       - run:
           name: Build Docker image
-          command: docker build -t mosquitto-unraid .
+          command: make mosquitto-unraid
+      - run:
+          name: Build Test image
+          command: make mosquitto-unraid-tests
       - run:
           name: Test Docker image
-          command: |
-            python3 -m venv .venv
-            source .venv/bin/activate
-            pip install -r tests/requirements.txt
-            mkdir -p test-results/docker
-            pytest --junit-xml=test-results/docker/results.xml tests/
+          command: make circleci-test
       - store_test_results:
           path: test-results
       - run:

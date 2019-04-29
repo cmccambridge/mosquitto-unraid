@@ -19,21 +19,7 @@ def test_basic_functionality(create_mosquitto_container):
     mosquitto = create_mosquitto_container()
 
     mosquitto.start()
-    mqtt_port = mosquitto.get_host_port(1883)
-    assert mqtt_port is not None
-
-    connection_rc = None
-    def on_connect(client, user_data, flags, rc):
-        nonlocal connection_rc
-        connection_rc = rc
-        client.disconnect()
-
-    client = mqtt.Client()
-    client.on_connect = on_connect
-    client.connect("127.0.0.1", port=mqtt_port)
-
-    timeout_time = datetime.now() + timedelta(seconds=5)
-    while datetime.now() < timeout_time and connection_rc is None:
-        client.loop()
-
-    assert connection_rc == 0
+    ran = False
+    with mosquitto.connect():
+        ran = True
+    assert ran
