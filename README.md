@@ -10,6 +10,7 @@ This container is a minimal port of the official [Eclipse Mosquitto][eclipse-mos
 * [Ports](#ports)
 * [Configuration](#configuration)
 * [Advanced Configuration](#advanced-configuration)
+* [Command Line MQTT Clients](#command-line-mqtt-clients)
 * [unRAID Integration](#unraid-integration)
 
 [eclipse-mosquitto]: https://mosquitto.org
@@ -154,6 +155,23 @@ _In the meantime, consult the [official documentation][official-docs]_
 TODO
 
 _In the meantime, consult the [official documentation][official-docs]_
+
+## Command Line MQTT Clients
+
+For convenience of testing MQTT environments, this container includes the command-line interface tools `mosquitto_sub` and `mosquitto_pub`. You can find the details of their usage in their respective man pages ([`mosquitto_sub`][man-mosquitto_sub], [`mosquitto_pub`][man-mosquitto_pub]), but here are some quick examples:
+
+Use `mosquitto_sub` in a new container to subscribe to an MQTT topic `$MQTT_TOPIC` on a remote host `$MQTT_HOST`:
+```
+docker run --rm -it mosquitto-unraid mosquitto_sub -h ${MQTT_HOST} -p 1883 -t ${MQTT_TOPIC}
+```
+
+Use `mosquitto_pub` to publish a message `$MQTT_MESSAGE` to an MQTT topic `$MQTT_TOPIC` on the mosquitto instance in an _existing_ running `mosquitto-unraid` container named `$CONTAINER`:
+```
+docker exec -it ${CONTAINER} mosquitto_pub -h 127.0.0.1 -p 1883 -t ${MQTT_TOPIC} -m ${MQTT_MESSAGE}
+```
+
+[man-mosquitto_sub]: https://mosquitto.org/man/mosquitto_sub-1.html
+[man-mosquitto_pub]: https://mosquitto.org/man/mosquitto_pub-1.html
 
 ## unRAID Integration
 

@@ -24,20 +24,28 @@ def test_basic_functionality(create_mosquitto_container):
         ran = True
     assert ran
 
-def test_container_includes_mosquitto_sub(create_mosquitto_container):
-    mosquitto_sub = create_mosquitto_container(command='/usr/bin/mosquitto_sub --help')
-    mosquitto_sub.start()
-    mosquitto_sub.wait()
+def run_once(create_mosquitto_container, command):
+    mosquitto = create_mosquitto_container(command=command)
+    mosquitto.start()
+    mosquitto.wait()
+    return mosquitto.logs()
 
-    logs = mosquitto_sub.logs()
+def test_container_includes_mosquitto_sub(create_mosquitto_container):
+    logs = run_once(create_mosquitto_container, command='/usr/bin/mosquitto_sub --help')
+    assert b'mqtt' in logs
+    assert b'mosquitto_sub version' in logs
+
+def test_container_runs_mosquitto_sub_from_PATH(create_mosquitto_container):
+    logs = run_once(create_mosquitto_container, command='mosquitto_sub --help')
     assert b'mqtt' in logs
     assert b'mosquitto_sub version' in logs
 
 def test_container_includes_mosquitto_pub(create_mosquitto_container):
-    mosquitto_pub = create_mosquitto_container(command='/usr/bin/mosquitto_pub --help')
-    mosquitto_pub.start()
-    mosquitto_pub.wait()
+    logs = run_once(create_mosquitto_container, command='/usr/bin/mosquitto_pub --help')
+    assert b'mqtt' in logs
+    assert b'mosquitto_pub version' in logs
 
-    logs = mosquitto_pub.logs()
+def test_container_runs_mosquitto_pub_from_PATH(create_mosquitto_container):
+    logs = run_once(create_mosquitto_container, command='mosquitto_pub --help')
     assert b'mqtt' in logs
     assert b'mosquitto_pub version' in logs
