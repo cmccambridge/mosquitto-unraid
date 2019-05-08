@@ -82,6 +82,9 @@ class MosquittoContainerHelper:
     def stop(self):
         return self.container.stop()
 
+    def exec_run(self, **kwargs):
+        return self.container.exec_run(**kwargs)
+
     def logs(self):
         return self.container.logs()
 
