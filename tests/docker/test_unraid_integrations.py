@@ -60,3 +60,24 @@ def test_end_to_end_pub_sub_cli(create_mosquitto_container):
 
     # Inspect subscriber's logs, expecting to see the message from the publisher
     assert message in sub.logs()
+
+def test_end_to_end_pub_sub_cli_single_container(create_mosquitto_container):
+    # Create an MQTT server on dfeault port 1883
+    mosquitto = create_mosquitto_container()
+    mosquitto.start()
+
+    # Create an MQTT subscriber listening up to 30 seconds for 1 message on /test/topic
+    (sub_rc, sub_logs) = mosquitto.exec_run(
+        cmd=f'/usr/bin/mosquitto_sub -h 127.0.0.1 -p 1883 -t /test/topic -C 1 -W 30',
+        stream=True
+        )
+
+    # Finally, use an MQTT publisher to push a message to /test/topic
+    message = b'mqtt_test_mesage'
+    (pub_rc, pub_logs) = mosquitto.exec_run(
+        cmd=f'/usr/bin/mosquitto_pub -h 127.0.0.1 -p 1883 -t /test/topic -m \'f{message}\'',
+        stream=True
+        )
+
+    # Inspect subscriber's logs, expecting to see the message from the publisher
+    assert any(message in line for line in sub_logs)
