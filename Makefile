@@ -2,10 +2,12 @@ MKDIR_P := mkdir -p
 
 .PHONY: all clean images test circleci-test release
 
+all: images test
+
 clean:
-	rm -f mosquitto-unraid mosquitto-unraid-test
-	docker image rm mosquitto-unraid
-	docker image rm mosquitto-unraid-tests
+	-rm -f mosquitto-unraid mosquitto-unraid-tests
+	-docker image rm mosquitto-unraid
+	-docker image rm mosquitto-unraid-tests
 
 images: mosquitto-unraid mosquitto-unraid-tests
 
