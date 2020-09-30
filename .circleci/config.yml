@@ -4,7 +4,7 @@ version: 2.1
 jobs:
   build_test:
     docker:
-      - image: circleci/python:3.7.2
+      - image: cimg/python:3.8
 
     steps:
       - checkout
@@ -35,7 +35,7 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/python:3.7.2
+      - image: cimg/python:3.8
     steps:
       - setup_remote_docker
       - attach_workspace:
