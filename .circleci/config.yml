@@ -16,9 +16,6 @@ jobs:
           command: |
             echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USER --password-stdin
       - run:
-          name: Test Docker Login
-          command: docker login
-      - run:
           name: Build Docker image
           command: make mosquitto-unraid
       - run:
