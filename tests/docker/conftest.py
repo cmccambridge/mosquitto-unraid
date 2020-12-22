@@ -99,7 +99,9 @@ class MosquittoContainerHelper:
             self,
             container_port=1883,
             protocol='tcp',
-            timeout=timedelta(seconds=5)
+            timeout=timedelta(seconds=5),
+            username=None,
+            password=None
             ):
         container_host = self.get_container_ip()
 
@@ -110,6 +112,8 @@ class MosquittoContainerHelper:
 
         client = mqtt.Client()
         client.on_connect = _on_connect
+        if username or password:
+            client.username_pw_set(username, password)
         client.connect(container_host, port=container_port)
 
         try:
