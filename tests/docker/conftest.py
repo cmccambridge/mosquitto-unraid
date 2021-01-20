@@ -64,8 +64,14 @@ def create_container(request, create_volume):
 def create_tar_archive(filespecs):
     tar_stream = BytesIO()
     with tarfile.open(fileobj=tar_stream, mode='w') as tar:
-        for archive_name, local_path in filespecs.items():
-            tar.add(name=local_path, arcname=archive_name)
+        for archive_name, source in filespecs.items():
+            if isinstance(source, str):
+                tar.add(name=source, arcname=archive_name)
+            else:
+                # Assume BytesIO-like object
+                tarinfo = tarfile.TarInfo(archive_name)
+                tarinfo.size = len(source.getvalue())
+                tar.addfile(tarinfo, fileobj=source)
     tar_stream.seek(0)
     return tar_stream
 
@@ -93,7 +99,9 @@ class MosquittoContainerHelper:
             self,
             container_port=1883,
             protocol='tcp',
-            timeout=timedelta(seconds=5)
+            timeout=timedelta(seconds=5),
+            username=None,
+            password=None
             ):
         container_host = self.get_container_ip()
 
@@ -104,6 +112,8 @@ class MosquittoContainerHelper:
 
         client = mqtt.Client()
         client.on_connect = _on_connect
+        if username or password:
+            client.username_pw_set(username, password)
         client.connect(container_host, port=container_port)
 
         try:

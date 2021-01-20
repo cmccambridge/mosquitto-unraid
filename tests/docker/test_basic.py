@@ -16,7 +16,11 @@ def test_allows_cmd_override(create_mosquitto_container):
     assert any(b'hellopytest' in line for line in mosquitto.logs().splitlines())
 
 def test_basic_functionality(create_mosquitto_container):
-    mosquitto = create_mosquitto_container()
+    mosquitto = create_mosquitto_container(
+        initial_filespecs={
+            '/mosquitto/config/mqtt_on_1883.conf': 'mqtt_on_1883.conf'
+            }
+        )
 
     mosquitto.start()
     ran = False

@@ -5,7 +5,11 @@ import os
 import pytest
 
 def test_creates_example_mosquitto_conf(create_mosquitto_container):
-    mosquitto = create_mosquitto_container()
+    mosquitto = create_mosquitto_container(
+        initial_filespecs={
+            '/mosquitto/config/mqtt_on_1883.conf': 'mqtt_on_1883.conf'
+            }
+        )
     mosquitto.start()
 
     # Ensure container is up and running
@@ -42,8 +46,12 @@ def test_uses_include_dir_by_default(create_mosquitto_container, tmpdir):
     assert connected
 
 def test_end_to_end_pub_sub_cli(create_mosquitto_container):
-    # Create an MQTT server on dfeault port 1883
-    server = create_mosquitto_container()
+    # Create an MQTT server on default port 1883
+    server = create_mosquitto_container(
+        initial_filespecs={
+            '/mosquitto/config/mqtt_on_1883.conf': 'mqtt_on_1883.conf'
+            }
+        )
     server.start()
 
     # Create an MQTT subscriber listening up to 30 seconds for 1 message on /test/topic
@@ -63,7 +71,11 @@ def test_end_to_end_pub_sub_cli(create_mosquitto_container):
 
 def test_end_to_end_pub_sub_cli_single_container(create_mosquitto_container):
     # Create an MQTT server on dfeault port 1883
-    mosquitto = create_mosquitto_container()
+    mosquitto = create_mosquitto_container(
+        initial_filespecs={
+            '/mosquitto/config/mqtt_on_1883.conf': 'mqtt_on_1883.conf'
+            }
+        )
     mosquitto.start()
 
     # Create an MQTT subscriber listening up to 30 seconds for 1 message on /test/topic

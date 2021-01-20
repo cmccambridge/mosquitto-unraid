@@ -1,4 +1,4 @@
-docker~=3.7.2
-paho-mqtt~=1.4.0
-plumbum~=1.6.7
-pytest~=4.4.1
+docker~=4.4.0
+paho-mqtt~=1.5.1
+plumbum~=1.6.9
+pytest~=6.2.1

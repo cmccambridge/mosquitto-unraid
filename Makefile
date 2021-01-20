@@ -11,7 +11,7 @@ clean:
 
 images: mosquitto-unraid mosquitto-unraid-tests
 
-mosquitto-unraid: Dockerfile include_dir.conf docker-entrypoint.sh
+mosquitto-unraid: Dockerfile *.conf docker-entrypoint.sh
 	docker build -t mosquitto-unraid . && touch mosquitto-unraid
 
 mosquitto-unraid-tests: tests/Dockerfile tests/requirements.txt tests/run_tests.sh tests/docker/*.py
