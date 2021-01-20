@@ -5,13 +5,20 @@
 
 This container is a minimal port of the official [Eclipse Mosquitto][eclipse-mosquitto] Docker container with minor tweaks to work more conveniently in unRAID.
 
+> # Breaking Change: Mosquitto 2.x
+> **You must take manual action to update your `mosquitto-unraid` configuration** as per the [2.x Breaking Change](#breaking-change) section below.
+>
+> `mosquitto-unraid` has taken a breaking change from the upstream Eclipse Mosquitto project to restrict access to unauthenticated clients and non-loopback networks without explicit configuration.
+
 * [Usage](#usage)
+* [Environment Variables](#environment-variables)
 * [Volumes](#volumes)
 * [Ports](#ports)
 * [Configuration](#configuration)
 * [Advanced Configuration](#advanced-configuration)
 * [Command Line MQTT Clients](#command-line-mqtt-clients)
 * [unRAID Integration](#unraid-integration)
+* [2.x Breaking Change](#breaking-change)
 
 [eclipse-mosquitto]: https://mosquitto.org
 
@@ -34,6 +41,14 @@ docker create \
   quay.io/cmccambridge/mosquitto-unraid
 ```
 
+## Environment Variables
+
+The following environment variables may be used to configure `mosquitto-unraid`:
+
+|Environment Variable|Default|Description|
+|---|---|---|
+|`RUN_INSECURE_MQTT_SERVER`|_not set_|Set this environment variable to `1` to run an insecure default MQTT server accepting anonymous clients on port 1883. Any other value will have no effect.<br/><br/>This was the default configuration prior to Mosquitto 2.0.0. For more information, refer to the [2.x Breaking Change](#breaking-change) section.|
+
 ## Volumes
 
 The following volumes are defined by the [official Docker image][official-docker] for Eclipse Mosquitto and are available for use in `mosquitto-unraid` as well:
@@ -46,7 +61,7 @@ The following volumes are defined by the [official Docker image][official-docker
 
 ## Ports
 
-The following ports are used by the default mosquitto configuration:
+The following ports are standard MQTT ports:
 
 |Port|Description|
 |---|---|
@@ -54,11 +69,13 @@ The following ports are used by the default mosquitto configuration:
 |8883|_Optional:_ Frequently used as a MQTT TLS port. Not enabled by default. See [enabling TLS](#enabling-tls) configuration requirements.|
 |9001|_Optional:_ Standard MQTT Websockets port. Not enabled by default. See [Websockets](#websockets) configuration requirements.|
 
-**Note:** You can modify the default listening ports through `*.conf` files, in which case you should update the corresponding port mappings as well.
+**Note:** Starting with Mosquitto 2.0.0, no listener will be started without explicit configuration. You can define listening ports through `*.conf` files, or enable a default insecure MQTT listener on port 1883 using the `RUN_INSECURE_MQTT_SERVER` environment variable. If you configure custom listeners, you should update the corresponding port mappings as well.
 
 ## Configuration
 
 To configure `mosquitto-unraid`, place one or more `*.conf` files in the volume bound to `/mosquitto/config`. If the container is run and no existing `mosquitto.conf.example` exists in the mounted volume, a new copy is created containing the [default contents][default-mosquitto-conf] of `mosquitto.conf`, which can be consulted as a reference.
+
+Starting with Mosquitto 2.0.0, you **must** explicitly configure listeners, or set the `RUN_INSECURE_MQTT_SERVER` override variable. If the container is run and no listeners have been explicitly configured and the override variable is not set, then a `mosquitto-unraid-default.conf` file will be generated in the `/mosquitto/config` volume with examples of valid explicit configurations, and the container will terminate with instructions printed to the logs.
 
 For full details of the available configuration options, consult `man mosquitto.conf`, the [online documentation][online-man-page], or the [default content][default-mosquitto-conf] of `mosquitto.conf`.
 
@@ -183,6 +200,7 @@ Notes:
 
 |Type|Setting|Value|Notes|
 |----|-------|-----|-----|
+|Variable|`RUN_INSECURE_MQTT_PORT`|`0`|Set to `1` to enable a default insecure MQTT server on port 1883. See [Environment Variables](#environment-variables)|
 |Path|`/mosquitto/config`|`/mnt/user/appdata/mosquitto`|Store mosquitto `*.conf` configuration files|
 |Path|`/mosquitto/data`||Store persistent MQTT data|
 |Path|`/mosquitto/log`||Store `mosquitto` logs|
@@ -193,6 +211,44 @@ Notes:
 [unraid]: https://lime-technology.com/
 [ca]: https://lime-technology.com/forums/topic/38582-plug-in-community-applications/
 [template]: https://raw.githubusercontent.com/cmccambridge/unraid-templates/master/cmccambridge/mosquitto-unraid.xml
+
+## 2.x Breaking Change <a name="breaking-change"></a>
+
+The upstream Eclipse Mosquitto project has taken a breaking change with their 2.x series of releases, beginning with 2.0.0. `mosquitto-unraid` has taken this breaking change as well to comply with the upstream change in security posture.
+
+**This change will require manual configuration update if you have _not_ previously configured a custom MQTT listener.**
+
+In short, the container now requires that you either:
+1. Explicitly configure an MQTT listener **or**
+2. Explicitly set the environment variable `RUN_INSECURE_MQTT_SERVER=1` to re-enable the 1.x series default configuration.
+
+To learn more about the details and motivation for the upstream change, you can read the [Mosquitto 2.0 release notes](https://mosquitto.org/blog/2020/12/version-2-0-0-released/) or the Eclipse [migration guide](https://mosquitto.org/documentation/migrating-to-2-0/).
+
+To migrate your existing `mosquitto-unraid` container, take one of the following paths:
+
+### Option 1: Set `RUN_INSECURE_MQTT_SERVER` to `1` in this container's configuration
+Update your docker command line or unRAID variables to set the environment variable `RUN_INSECURE_MQTT_SERVER` = `1`. This will enable the same insecure default settings that were in effect by default in the Mosquitto 1.x series:
+* A default listener on port 1883
+* Anonymous (unauthenticated) connections
+
+These settings corresponding with this configuration snippet:
+```
+listener 1883
+protocol mqtt
+allow_anonymous true
+```
+
+### Option 2: Edit the generated file `mosquitto-unraid-default.conf`
+If `mosquitto-unraid` detects that it is started in an unmigrated configuration (i.e. with no explicit listener configured and without `RUN_INSECURE_MQTT_SERVER` set), then the container will create a default configuration file in the `/mosquitto/config` volume.
+
+This default configuration file contains a few simple examples which can be uncommented to satisfy the explicit configuration requirement, including:
+* A Mosquitto 1.x-like anonymous connections on port 1883 configuration, identical to the `RUN_INSECURE_MQTT_SERVER` configuration.
+* A password-file authentication configuration which requires additional steps to establish user accounts. See [Authentication](#authentication) for more information on creating user accounts.
+
+See the generated `mosquitto-unraid-default.conf` file for further details.
+
+### Option 3: Configure Mosquitto to your preferences, including at least one listener
+See the [Configuration](#configuration) section for more details.
 
 ## Future Work
 
