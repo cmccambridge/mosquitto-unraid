@@ -1,0 +1,9 @@
+2.x Migration:
+    ✔ Migration support @done(21-01-19 22:16)
+    ✔ Migration end-to-end testing @done(21-01-19 22:16)
+    ✔ Test 2.0.5 @done(21-01-19 22:20)
+    ☐ Update README
+    ☐ Update template with new RUN_INSECURE_MQTT_SERVER parameter
+    ☐ Test template update end-to-end (without new Docker image - just variable)
+    ☐ Post in support thread
+    ☐ Deploy update
