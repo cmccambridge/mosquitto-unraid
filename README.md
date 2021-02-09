@@ -1,7 +1,7 @@
 ![mosquitto logo](https://raw.githubusercontent.com/cmccambridge/mosquitto-unraid/master/media/eclipse-mosquitto.png)
 
 # cmccambridge/mosquitto-unraid
-[![](https://img.shields.io/circleci/project/github/cmccambridge/mosquitto-unraid/master.svg)](https://circleci.com/gh/cmccambridge/mosquitto-unraid/tree/master) [![](https://img.shields.io/docker/pulls/cmccambridge/mosquitto-unraid.svg)](https://hub.docker.com/r/cmccambridge/mosquitto-unraid/) [![](https://images.microbadger.com/badges/version/cmccambridge/mosquitto-unraid.svg)](https://microbadger.com/images/cmccambridge/mosquitto-unraid "Get your own version badge on microbadger.com") [![](https://images.microbadger.com/badges/image/cmccambridge/mosquitto-unraid.svg)](https://microbadger.com/images/cmccambridge/mosquitto-unraid "Get your own image badge on microbadger.com")
+[![](https://img.shields.io/circleci/project/github/cmccambridge/mosquitto-unraid/master.svg)](https://circleci.com/gh/cmccambridge/mosquitto-unraid/tree/master) [![](https://img.shields.io/docker/pulls/cmccambridge/mosquitto-unraid.svg)](https://hub.docker.com/r/cmccambridge/mosquitto-unraid/)
 
 This container is a minimal port of the official [Eclipse Mosquitto][eclipse-mosquitto] Docker container with minor tweaks to work more conveniently in unRAID.
 
@@ -27,7 +27,8 @@ This container is a minimal port of the official [Eclipse Mosquitto][eclipse-mos
 Quick & Easy:
 1. Install from [Community Applications][ca]
 2. Configure port mappings
-3. Done!
+3. Enable `RUN_INSECURE_MQTT_SERVER` **or** set up an [authenticated configuration](#authentication)
+4. Done!
 
 Full Custom:
 ```
@@ -38,7 +39,8 @@ docker create \
   -p 1883:1883 \
   -p 8883:8883 \
   -p 9001:9001 \
-  quay.io/cmccambridge/mosquitto-unraid
+  -e RUN_INSECURE_MQTT_SERVER=1 \
+  cmccambridge/mosquitto-unraid
 ```
 
 ## Environment Variables
@@ -200,7 +202,7 @@ Notes:
 
 |Type|Setting|Value|Notes|
 |----|-------|-----|-----|
-|Variable|`RUN_INSECURE_MQTT_PORT`|`0`|Set to `1` to enable a default insecure MQTT server on port 1883. See [Environment Variables](#environment-variables)|
+|Variable|`RUN_INSECURE_MQTT_SERVER`|`0`|Set to `1` to enable a default insecure MQTT server on port 1883. See [Environment Variables](#environment-variables)|
 |Path|`/mosquitto/config`|`/mnt/user/appdata/mosquitto`|Store mosquitto `*.conf` configuration files|
 |Path|`/mosquitto/data`||Store persistent MQTT data|
 |Path|`/mosquitto/log`||Store `mosquitto` logs|
@@ -259,3 +261,20 @@ Please see the [GitHub Issues][issues], where you can report any problems or mak
 ## Credits
 
 The Eclipse Mosquitto logo
+
+## CHANGELOG <a name="changelog"></a>
+
+**2.0.7 (2021-02-05)**
+* Upgrade to upstream 2.0.7 release
+
+**2.0.6 (2021-02-04)**
+* Upgrade to upstream 2.0.6 release
+
+**2.0.5 (2021-01-20)**
+* **BREAKING CHANGE: Manual Configuration Required**
+* Upgrade to upstream 2.0.5 release, the first 2.x release supported by `mosquitto-unraid`
+* Follow upstream security posture: Without explicit configuration, do not run a wide open MQTT server
+* Add migration logic and document breaking changes in README:
+    - On container start, check for user-defined listeners or customization of default listener
+    - If no listeners, check for override variable `RUN_INSECURE_MQTT_SERVER`
+    - If no listeners and no override, exit the container with a message.
