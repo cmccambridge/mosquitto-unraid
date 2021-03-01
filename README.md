@@ -264,6 +264,9 @@ The Eclipse Mosquitto logo
 
 ## CHANGELOG <a name="changelog"></a>
 
+**2.0.8 (2021-03-01)**
+* Upgrade to upstream 2.0.8 release
+
 **2.0.7 (2021-02-05)**
 * Upgrade to upstream 2.0.7 release
 

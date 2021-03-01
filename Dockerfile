@@ -1,4 +1,4 @@
-FROM eclipse-mosquitto:2.0.7
+FROM eclipse-mosquitto:2.0.8
 
 LABEL maintainer="Colin McCambridge <colin@mccambridge.org>" \
     description="mosquitto-unraid: Eclipse Mosquitto Broker tweaked for unRAID"
