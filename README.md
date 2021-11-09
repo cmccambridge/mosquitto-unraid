@@ -264,6 +264,12 @@ The Eclipse Mosquitto logo
 
 ## CHANGELOG <a name="changelog"></a>
 
+**2.0.13 (2021-11-09)**
+* Upgrade to [upstream 2.0.13 release](https://mosquitto.org/blog/2021/10/version-2-0-13-released/)
+* Includes [2.0.12 updates](https://mosquitto.org/blog/2021/08/version-2-0-12-released/)
+* Includes [2.0.11 updates](https://mosquitto.org/blog/2021/06/version-2-0-11-released/)
+* This upstream update includes security fixes from 2.0.11 and 2.0.12.
+
 **2.0.10 (2021-04-06)**
 * Upgrade to [upstream 2.0.10 release](https://mosquitto.org/blog/2021/04/version-2-0-10-released/)
 * This upstream update includes security fixes
