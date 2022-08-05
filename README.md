@@ -267,6 +267,7 @@ The Eclipse Mosquitto logo
 **2.0.14 (2022-08-04)**
 * ⬆️ Upgrade to [upstream 2.0.14 release](http://mosquitto.org/blog/2021/11/version-2-0-14-released/)
     * No security fixes in this release.
+* 🐛 Enable timezone awareness in the container. Thanks @askibit!
 
 **2.0.13 (2021-11-09)**
 * Upgrade to [upstream 2.0.13 release](https://mosquitto.org/blog/2021/10/version-2-0-13-released/)
