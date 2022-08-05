@@ -264,6 +264,10 @@ The Eclipse Mosquitto logo
 
 ## CHANGELOG <a name="changelog"></a>
 
+**2.0.14 (2022-08-04)**
+* ⬆️ Upgrade to [upstream 2.0.14 release](http://mosquitto.org/blog/2021/11/version-2-0-14-released/)
+    * No security fixes in this release.
+
 **2.0.13 (2021-11-09)**
 * Upgrade to [upstream 2.0.13 release](https://mosquitto.org/blog/2021/10/version-2-0-13-released/)
 * Includes [2.0.12 updates](https://mosquitto.org/blog/2021/08/version-2-0-12-released/)
