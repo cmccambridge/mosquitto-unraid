@@ -1,0 +1,18 @@
+name: Deploy Docker Image
+
+on:
+  push:
+    branches: [ "master", "github-actions" ]
+
+jobs:
+
+  build_test:
+    uses: ./.github/workflows/build_test.yml
+    secrets: inherit
+
+  deploy:
+    needs: build_test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check Docker Images
+      run: docker images
