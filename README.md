@@ -168,7 +168,7 @@ TODO
 
 _In the meantime, consult the [official documentation][official-docs]_
 
-[official-docs]: http://mosquitto.org/man/mosquitto-conf-5.html
+[official-docs]: https://mosquitto.org/man/mosquitto-conf-5.html
 
 ### Websockets
 TODO
@@ -264,8 +264,12 @@ The Eclipse Mosquitto logo
 
 ## CHANGELOG <a name="changelog"></a>
 
+**2.0.15 (2022-12-15)**
+* ⬆️ Upgrade to [upstream 2.0.15 release](https://mosquitto.org/blog/2022/08/version-2-0-15-released/)
+* This upstream update includes security fixes.
+
 **2.0.14 (2022-08-04)**
-* ⬆️ Upgrade to [upstream 2.0.14 release](http://mosquitto.org/blog/2021/11/version-2-0-14-released/)
+* ⬆️ Upgrade to [upstream 2.0.14 release](https://mosquitto.org/blog/2021/11/version-2-0-14-released/)
     * No security fixes in this release.
 * 🐛 Enable timezone awareness in the container. Thanks @askibit!
 
@@ -280,7 +284,7 @@ The Eclipse Mosquitto logo
 * This upstream update includes security fixes
 
 **2.0.9 (2021-03-14)**
-* Upgrade to [upstream 2.0.9 release](http://www.mosquitto.org/blog/2021/03/version-2-0-9-released/)
+* Upgrade to [upstream 2.0.9 release](https://www.mosquitto.org/blog/2021/03/version-2-0-9-released/)
 
 **2.0.8 (2021-03-01)**
 * Upgrade to upstream 2.0.8 release
