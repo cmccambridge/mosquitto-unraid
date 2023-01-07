@@ -1,7 +1,7 @@
 ![mosquitto logo](https://raw.githubusercontent.com/cmccambridge/mosquitto-unraid/master/media/eclipse-mosquitto.png)
 
 # cmccambridge/mosquitto-unraid
-[![](https://img.shields.io/circleci/project/github/cmccambridge/mosquitto-unraid/master.svg)](https://circleci.com/gh/cmccambridge/mosquitto-unraid/tree/master) [![](https://img.shields.io/docker/pulls/cmccambridge/mosquitto-unraid.svg)](https://hub.docker.com/r/cmccambridge/mosquitto-unraid/)
+[![](https://img.shields.io/docker/pulls/cmccambridge/mosquitto-unraid.svg)](https://hub.docker.com/r/cmccambridge/mosquitto-unraid/)
 
 This container is a minimal port of the official [Eclipse Mosquitto][eclipse-mosquitto] Docker container with minor tweaks to work more conveniently in unRAID.
 
