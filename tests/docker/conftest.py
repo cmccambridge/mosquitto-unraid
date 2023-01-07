@@ -114,7 +114,7 @@ class MosquittoContainerHelper:
         client.on_connect = _on_connect
         if username or password:
             client.username_pw_set(username, password)
-        client.connect(container_host, port=container_port)
+        client.connect_async(container_host, port=container_port)
 
         try:
             client.loop_start()
