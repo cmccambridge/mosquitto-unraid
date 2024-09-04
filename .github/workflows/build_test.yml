@@ -39,7 +39,7 @@ jobs:
       run: docker save --output docker-image.tar mosquitto-unraid
 
     - name: Upload Docker Image
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: ${{ inputs.archive && github.ref == 'refs/heads/master' }}
       with:
         name: docker-image

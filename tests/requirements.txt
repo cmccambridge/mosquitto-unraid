@@ -1,4 +1,4 @@
-docker~=6.1.2
+docker~=7.1.0
 paho-mqtt~=1.6.1
 plumbum~=1.8.2
 pytest~=6.2.1
